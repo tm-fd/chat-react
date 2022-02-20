@@ -4,8 +4,10 @@ import ChatMessage from "./ChatMessage";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { firestore } from "./firebase.js";
 import { auth } from "./firebase.js";
+const Filter = require("bad-words");
 
 function ChatRoom() {
+  const filter = new Filter();
   const dummy = useRef();
 
   const messagesRef = firestore.collection("messages");
@@ -23,7 +25,7 @@ function ChatRoom() {
     // create new document in database
 
     await messagesRef.add({
-      text: formValue,
+      text: filter.clean(formValue),
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       uid,
       photoURL,
